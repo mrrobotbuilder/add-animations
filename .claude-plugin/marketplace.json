@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "add-animations",
+  "description": "The /add-animations skill: a whole-site motion pass with a catalog of 40 animation styles.",
+  "owner": {
+    "name": "mrrobotbuilder",
+    "url": "https://github.com/mrrobotbuilder"
+  },
+  "plugins": [
+    {
+      "name": "add-animations",
+      "description": "Whole-site motion pass: both-ways scroll reveals, scroll layer, set pieces, page transitions, feedback, browser-verified.",
+      "source": "./",
+      "category": "design"
+    }
+  ]
+}

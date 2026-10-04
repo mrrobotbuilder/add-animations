@@ -1,0 +1,10 @@
+{
+  "name": "add-animations",
+  "version": "1.0.0",
+  "description": "Give a whole website a motion pass: both-ways scroll reveals, a native scroll layer, set pieces tied to the copy, page transitions and control feedback, proven in a real browser without breaking accessibility or performance.",
+  "author": {
+    "name": "mrrobotbuilder",
+    "url": "https://github.com/mrrobotbuilder"
+  },
+  "license": "MIT"
+}

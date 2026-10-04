@@ -1,0 +1,85 @@
+/* Proven 2026-10-01 (Chromium scroll-driven animations; shipped on a Next.js
+   site). Adapt the selectors: .scroll-progress is a fixed 2px bar,
+   [data-starfield] any background layer, [data-hero-card] a wrapper around the
+   element that turns away, .shot-open a screenshot or media block. */
+/*
+ * The scroll layer: motion tied to the scroll position, so it runs while the
+ * visitor scrolls, backwards when they scroll up, and never on its own. Native
+ * scroll-driven animations: no script, off the main thread. A browser without
+ * them, and reduced motion, get the still page. `animation-timeline` comes
+ * after the `animation` shorthand, which resets it.
+ */
+.scroll-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* A line along the top edge fills as the page is read. Empty at rest: on a
+       page too short to scroll the timeline is INACTIVE and the animation
+       applies nothing, so without this base value the line sits at full width
+       on every short page (a 404). The keyframes need an explicit `to` for the
+       same reason. */
+    .scroll-progress {
+      display: block;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      animation: scroll-progress linear both;
+      animation-timeline: scroll(root);
+    }
+    /* A background layer drifts at half the page's speed: depth behind the hero.
+       `translate`, not `transform`, so it composes with any entrance on the same element. */
+    [data-starfield] {
+      animation: starfield-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100svh;
+    }
+    /* The hero card tips back and dims as it leaves the screen, and stands up
+       again on the way back. On a wrapper, so the card's own pointer tilt stays
+       free, and at rest at scroll 0, so anything that measures it there is unaffected. */
+    [data-hero-card] {
+      transform-origin: 50% 100%;
+      animation: hero-card-away linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    /* A screenshot window opens from its middle line and settles from 0.94 to 1
+       as it scrolls into view, and closes again on the way back up. */
+    .shot-open {
+      animation: shot-open linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+  }
+}
+@keyframes scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes starfield-drift {
+  to {
+    translate: 0 50svh;
+  }
+}
+@keyframes hero-card-away {
+  to {
+    transform: perspective(900px) rotateX(32deg) scale(0.9);
+    opacity: 0.3;
+  }
+}
+@keyframes shot-open {
+  from {
+    clip-path: inset(50% 0 round 12px);
+    scale: 0.94;
+  }
+  60% {
+    clip-path: inset(0 round 12px);
+  }
+  to {
+    clip-path: inset(0 round 12px);
+    scale: 1;
+  }
+}
